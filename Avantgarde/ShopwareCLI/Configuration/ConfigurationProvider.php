@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * @package    ShopwareCLI
@@ -93,6 +92,10 @@ class ConfigurationProvider {
         }
         if (!isset($this->configArray['shops'][$name]['path']) || !isset($this->configArray['shops'][$name]['web'])) {
             throw new InvalidArgumentException('Given shop is not properly configured. It needs a path and a web-value.');
+        }
+
+        if (!is_dir($this->configArray['shops'][$name]['path'])) {
+            throw new InvalidArgumentException('Given shop is not properly configured: Path does not exist.');
         }
 
         $shop = $this->configArray['shops'][$name];
