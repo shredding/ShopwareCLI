@@ -3,4 +3,5 @@
 config.yml
 !config.yml.example
 /vendor
+/tmp/*
 composer.lock

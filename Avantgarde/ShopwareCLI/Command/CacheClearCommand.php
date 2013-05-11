@@ -80,27 +80,32 @@ EOF
 
         $atLeastOneFlagSet = FALSE;
 
+        $output->writeln('');
         if ($input->getOption('templates')) {
             $fs->remove(array($caches['templates']));
             $fs->mkdir(array($caches['templates']));
+            $output->writeln('<info>Template Cache has been cleared.</info>');
             $atLeastOneFlagSet = TRUE;
         }
 
         if ($input->getOption('database')) {
             $fs->remove(array($caches['database']));
             $fs->mkdir(array($caches['database']));
+            $output->writeln('<info>Database Cache has been cleared.</info>');
             $atLeastOneFlagSet = TRUE;
         }
 
         if ($input->getOption('proxies')) {
             $fs->remove(array($caches['proxies']));
             $fs->mkdir(array($caches['proxies']));
+            $output->writeln('<info>Proxy Cache has been cleared.</info>');
             $atLeastOneFlagSet = TRUE;
         }
 
         if (!$atLeastOneFlagSet) {
             $fs->remove($caches);
             $fs->mkdir($caches);
+            $output->writeln('<info>All Caches have been cleared.</info>');
         }
 
     }
