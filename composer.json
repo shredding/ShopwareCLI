@@ -1,0 +1,20 @@
+{
+    "name": "avantgarde/shopware-cli",
+    "description": "A set of cli tools for shopware 4.x",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Christian Peters",
+            "email": "chp@digitale-avantgarde.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "2.2.x-dev",
+        "symfony/config": "2.2.x-dev",
+        "symfony/filesystem": "2.2.x-dev",
+        "symfony/yaml": "2.2.x-dev"
+    },
+    "autoload": {
+            "psr-0": { "Avantgarde": "" }
+    }
+}
