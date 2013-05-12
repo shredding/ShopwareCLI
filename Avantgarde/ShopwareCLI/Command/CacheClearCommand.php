@@ -67,7 +67,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $fs = new Filesystem();
+        $fs = $this->configuration->getService('filesystem');
         $shop = $this->configuration->getShop();
         $baseDir = $shop['path'];
 

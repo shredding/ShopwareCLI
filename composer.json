@@ -12,7 +12,8 @@
         "symfony/console": "2.2.x-dev",
         "symfony/config": "2.2.x-dev",
         "symfony/filesystem": "2.2.x-dev",
-        "symfony/yaml": "2.2.x-dev"
+        "symfony/yaml": "2.2.x-dev",
+        "symfony/dependency-injection": "2.2.x-dev"
     },
     "autoload": {
             "psr-0": { "Avantgarde": "" }

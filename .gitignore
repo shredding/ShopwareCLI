@@ -1,7 +1,7 @@
 .idea
 .DS_Store
-config.yml
-!config.yml.example
+config/config.yml
+config/!config.yml.example
 /vendor
 /tmp/*
 composer.lock

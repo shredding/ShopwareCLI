@@ -1,0 +1,7 @@
+parameters:
+    filesystem.class: Symfony\Component\Filesystem\Filesystem
+
+services:
+
+    filesystem:
+       class: "%filesystem.class%"

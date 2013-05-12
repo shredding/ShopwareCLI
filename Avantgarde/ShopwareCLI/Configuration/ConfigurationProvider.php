@@ -9,6 +9,9 @@ use InvalidArgumentException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
  * @package    ShopwareCLI
@@ -19,7 +22,8 @@ use Symfony\Component\Config\Resource\FileResource;
  */
 class ConfigurationProvider {
 
-    const CONFIG_FILE = 'config.yml';
+    const CONFIG_FILE = 'config/config.yml';
+    const SERVICE_FILE = 'config/services.yml';
     const CONFIG_CACHE_FILE = 'config_cache.php';
     const TEMP_DIRECTORY = 'tmp';
 
@@ -49,6 +53,11 @@ class ConfigurationProvider {
     protected $shopName;
 
     /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * @param $baseDirectory
      * @param ClassLoader $classLoader
      */
@@ -58,6 +67,7 @@ class ConfigurationProvider {
         $this->classLoader = $classLoader;
         $this->initialIncludePath = get_include_path();
         $this->loadConfiguration();
+        $this->loadDependencyInjectionContainer();
         $this->registerShop();
 
     }
@@ -157,6 +167,15 @@ class ConfigurationProvider {
     }
 
     /**
+     * @param string $name
+     * @return object
+     */
+    public function getService($name)
+    {
+        return $this->container->get($name);
+    }
+
+    /**
      * Loads the configuration YAML file.
      */
     protected function loadConfiguration()
@@ -180,7 +199,13 @@ class ConfigurationProvider {
         } else {
             $this->configArray = require_once $cacheFile;
         }
-    }
 
+    }
+    protected function loadDependencyInjectionContainer()
+    {
+        $this->container = new ContainerBuilder();
+        $loader = new YamlFileLoader($this->container, new FileLocator($this->baseDirectory));
+        $loader->load(self::SERVICE_FILE);
+    }
 
 }
