@@ -3,8 +3,6 @@
 
 namespace Avantgarde\ShopwareCLI\Command;
 
-
-use Avantgarde\ShopwareCLI\Application;
 use Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -60,10 +58,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-        $articles = Shopware()->Db()->query('SELECT * FROM s_articles');
-        var_dump($articles);
-        exit;
 
         $name = $input->getArgument('shop');
         $availableShops = $this->configuration->get('shops');

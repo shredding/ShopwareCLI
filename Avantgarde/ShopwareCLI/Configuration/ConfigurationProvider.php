@@ -114,17 +114,11 @@ class ConfigurationProvider {
         // Configure autoloader for shop
         set_include_path(
                 $this->initialIncludePath . PATH_SEPARATOR .
-                $shopPath . PATH_SEPARATOR .
                 $shopPath . '/engine/Library/' . PATH_SEPARATOR .
                 $shopPath . '/engine/' . PATH_SEPARATOR .
-                $shopPath . '/templates/'
+                $shopPath . '/templates/' . PATH_SEPARATOR .
+                $shopPath
         );
-
-        $this->classLoader->set('Shopware', $shopPath . DIRECTORY_SEPARATOR . 'engine');
-        $this->classLoader->set('Zend', $shopPath . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'library');
-        $this->classLoader->set('Enlight', $shopPath . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'library');
-        $this->classLoader->set('Doctrine', $shopPath . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'library');
-        $this->classLoader->set('DoctrineExtensions', $shopPath . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'library');
 
         $this->shopName = $name;
         return $this;

@@ -15,15 +15,21 @@ $classLoader = require_once 'vendor/autoload.php';
 use Avantgarde\ShopwareCLI\Application;
 
 $application = new Application();
-$application->initializeConfiguration(__DIR__, $classLoader);
+$application->initializeConfiguration(__DIR__, $classLoader)
+            ->initializeCommands();
 
-$shop = $application->getConfiguration()->getShop();
+include_once 'Enlight/Application.php';
+include_once 'Shopware/Application.php';
 
-include_once $shop['path'] . DIRECTORY_SEPARATOR . 'engine/Library/Enlight/Application.php';
-include_once $shop['path'] . DIRECTORY_SEPARATOR . 'engine/Shopware/Application.php';
+$config = require_once 'config.php';
+$config['cache'] = array(
+    'backend'           =>  'BlackHole',
+    'frontendOptions'   =>  array(),
+    'backendOptions'    =>  array()
+);
 
-$shopware = new Shopware('development');
-$shopware->Bootstrap();
+$shopware = new Shopware('development', $config);
+$shopware->Bootstrap()
+         ->loadResource('Zend');
 
-$application->initializeCommands()
-            ->run();
+$application->run();
