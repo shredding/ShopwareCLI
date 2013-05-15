@@ -61,6 +61,10 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
+        $articles = Shopware()->Db()->query('SELECT * FROM s_articles');
+        var_dump($articles);
+        exit;
+
         $name = $input->getArgument('shop');
         $availableShops = $this->configuration->get('shops');
 

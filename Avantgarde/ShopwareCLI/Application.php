@@ -31,21 +31,32 @@ class Application extends ConsoleApplication {
      */
     public function initializeConfiguration($baseDirectory, $classLoader) {
 
-        $configuration = new ConfigurationProvider($baseDirectory, $classLoader);
+        $this->configuration = new ConfigurationProvider($baseDirectory, $classLoader);
+        return $this;
+    }
 
-        $commands = $configuration->get('commands');
+    public function initializeCommands() {
+        $commands = $this->configuration->get('commands');
         foreach ($commands as $class) {
             /** @var Command $command */
             $command = new $class();
 
             if ($command instanceof ConfigurationAwareInterface) {
                 /** @var ConfigurationAwareInterface $command */
-                $command->setConfiguration($configuration);
+                $command->setConfiguration($this->configuration);
             }
             $this->add($command);
         }
 
         return $this;
+    }
+
+    /**
+     * @return ConfigurationProvider
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
     }
 
 }
