@@ -3,6 +3,7 @@
 
 namespace Avantgarde\ShopwareCLI\Command;
 
+use Avantgarde\ShopwareCLI\Application;
 use Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -67,7 +68,7 @@ EOF
             $output->writeln(sprintf('The currently selected shop is <info>%s</info>.', $this->configuration->getShopName()));
             $output->writeln('');
             $output->writeln(sprintf('Available shops are: %s.', implode(', ', array_keys($availableShops))));
-            return;
+            return 1;
         }
 
         $output->writeln('');
@@ -84,6 +85,10 @@ EOF
 
             return 1;
         }
+
+        /** @var Application $application */
+        $application = $this->getApplication();
+        $application->registerShop($name);
 
         // Configuration is written, the shop will now be used upon further commands.
         $output->writeln(sprintf('<info>Ok, %s is now active.</info>', $name));

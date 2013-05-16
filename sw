@@ -51,6 +51,7 @@ $shopware = new Shopware('development', $config);
 /** @var Shopware_Bootstrap $bootstrap */
 $bootstrap = $shopware->Bootstrap();
 $bootstrap->loadResource('Zend');
+$bootstrap->loadResource('Plugins');
 $bootstrap->initModels();
 
 $application->run();

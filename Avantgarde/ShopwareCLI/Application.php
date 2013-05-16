@@ -71,7 +71,6 @@ class Application extends ConsoleApplication {
             if (empty($name)) {
                 // If no or invalid name is given, we use the first from the config.
                 $name = $this->configuration->getFirstShopName();
-                die($name);
             } else {
                 file_put_contents($selectionFile, sprintf("<?php return %s;", var_export($name, TRUE)));
             }
