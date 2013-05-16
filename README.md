@@ -8,7 +8,7 @@ It is build upon the powerful symfony console component, supports management of 
 with a growing set of administrative task managers and code generators.
 
 > Disclaimer: ShopwareCLI is a fall-out from my daily work with shopware. I'm not releasing it because it's yet stable
-> and it's not associated with the shopware AG. I'm releasing, because I'm not comfortable with closed source.
+> and it's not associated with the shopware AG. I'm releasing it, because I'm not comfortable with closed source.
 
 Installation
 ------------
