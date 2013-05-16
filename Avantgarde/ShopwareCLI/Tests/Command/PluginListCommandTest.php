@@ -91,7 +91,6 @@ class PluginListCommandTest extends PHPUnit_Framework_TestCase {
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-
     }
 
 }
