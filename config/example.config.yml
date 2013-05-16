@@ -10,3 +10,7 @@ commands:
         Avantgarde\ShopwareCLI\Command\SelectShopCommand
     cache_clear:
         Avantgarde\ShopwareCLI\Command\CacheClearCommand
+    plugin_list:
+        Avantgarde\ShopwareCLI\Command\PluginListCommand
+    plugin_uninstall:
+        Avantgarde\ShopwareCLI\Command\PluginUninstallCommand
