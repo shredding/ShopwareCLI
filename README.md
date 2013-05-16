@@ -128,7 +128,7 @@ arranging loose coupling and makes testing much easier:
 ```php
 
     /** @var \Shopware $shopware */
-    $shopware = $this->configuration->getService('shopware');
+    $shopware = $configurationProvider->getService('shopware');
 ```
 
 
