@@ -16,7 +16,8 @@ use Avantgarde\ShopwareCLI\Application;
 
 $application = new Application();
 $application->initializeConfiguration(__DIR__, $classLoader)
-            ->initializeCommands();
+            ->initializeCommands()
+            ->registerShop();
 
 $shop = $application->getConfiguration()->getShop();
 

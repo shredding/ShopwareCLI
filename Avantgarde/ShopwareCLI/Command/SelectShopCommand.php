@@ -85,7 +85,7 @@ EOF
             return 1;
         }
 
-        $this->configuration->registerShop($name);
+        // Configuration is written, the shop will now be used upon further commands.
         $output->writeln(sprintf('<info>Ok, %s is now active.</info>', $name));
 
     }

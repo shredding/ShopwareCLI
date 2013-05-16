@@ -45,11 +45,6 @@ class ConfigurationProvider {
     /**
      * @var string
      */
-    protected $initialIncludePath;
-
-    /**
-     * @var string
-     */
     protected $shopName;
 
     /**
@@ -68,60 +63,7 @@ class ConfigurationProvider {
         $this->initialIncludePath = get_include_path();
         $this->loadConfiguration();
         $this->loadDependencyInjectionContainer();
-        $this->registerShop();
 
-    }
-
-    /**
-     * Registers a shopware shop.
-     *
-     * That means, that
-     *
-     * @param string $name
-     * @return $this
-     * @throws \InvalidArgumentException if given shop is not in config.yml
-     */
-    public function registerShop($name = '')
-    {
-
-        $selectionFile = $this->baseDirectory . DIRECTORY_SEPARATOR . self::TEMP_DIRECTORY . DIRECTORY_SEPARATOR . 'selected_shop.php';
-        if (empty($name) && file_exists($selectionFile) && is_readable($selectionFile)) {
-            $name = require_once $selectionFile;
-        } else {
-
-            if (empty($name)) {
-                // If no or invalid name is given, we use the first from the config.
-                $name = key(reset($this->configArray));
-            } else {
-                file_put_contents($selectionFile, sprintf("<?php return %s;", var_export($name, TRUE)));
-            }
-        }
-
-        if (!isset($this->configArray['shops'][$name])) {
-            throw new InvalidArgumentException('Given shop does not exist.');
-        }
-        if (!isset($this->configArray['shops'][$name]['path']) || !isset($this->configArray['shops'][$name]['web'])) {
-            throw new InvalidArgumentException('Given shop is not properly configured. It needs a path and a web-value.');
-        }
-
-        if (!is_dir($this->configArray['shops'][$name]['path'])) {
-            throw new InvalidArgumentException('Given shop is not properly configured: Path does not exist.');
-        }
-
-        $shop = $this->configArray['shops'][$name];
-        $shopPath = $shop['path'];
-
-        // Configure autoloader for shop
-        set_include_path(
-                $this->initialIncludePath . PATH_SEPARATOR .
-                $shopPath . '/engine/Library/' . PATH_SEPARATOR .
-                $shopPath . '/engine/' . PATH_SEPARATOR .
-                $shopPath . '/templates/' . PATH_SEPARATOR .
-                $shopPath
-        );
-
-        $this->shopName = $name;
-        return $this;
     }
 
 
@@ -153,6 +95,38 @@ class ConfigurationProvider {
     }
 
     /**
+     * @return array
+     */
+    public function getFirstShopName() {
+        return key(reset($this->configArray));
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     * @throws \InvalidArgumentException if shop does not exist or is improperly configured
+     */
+    public function getShopByName($name) {
+
+        if (!isset($this->configArray['shops'][$name])) {
+            throw new InvalidArgumentException('Given shop does not exist.');
+        }
+        if (!isset($this->configArray['shops'][$name]['path']) || !isset($this->configArray['shops'][$name]['web'])) {
+            throw new InvalidArgumentException('Given shop is not properly configured. It needs a path and a web-value.');
+        }
+
+        if (!is_dir($this->configArray['shops'][$name]['path'])) {
+            throw new InvalidArgumentException('Given shop is not properly configured: Path does not exist.');
+        }
+
+        return $this->configArray['shops'][$name];
+    }
+
+    public function setShopName($name) {
+        $this->shopName = $name;
+    }
+
+    /**
      * @return string
      */
     public function getShopName()
@@ -166,7 +140,19 @@ class ConfigurationProvider {
      */
     public function getService($name)
     {
-        return $this->container->get($name);
+
+        switch (strtolower($name)) {
+
+            case 'shopware':
+                return Shopware();
+
+            case 'enlight':
+                return Enlight();
+
+            default:
+                return $this->container->get($name);
+        }
+
     }
 
     /**

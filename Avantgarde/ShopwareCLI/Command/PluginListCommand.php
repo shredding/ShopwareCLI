@@ -5,7 +5,9 @@ namespace Avantgarde\ShopwareCLI\Command;
 
 
 use Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider;
+use Shopware\Models\Plugin\Plugin;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,9 +50,32 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var \Shopware $shopware */
+        $shopware = $this->configuration->getService('shopware');
+        $repository = $shopware->Models()->getRepository('Shopware\Models\Plugin\Plugin');
+        $builder = $repository->createQueryBuilder('plugin');
+        $builder->addOrderBy('plugin.name');
+        $plugins = $builder->getQuery()->execute();
 
-        $repository = Shopware()->Models()->getRepository('Shopware\Models\Plugin\Plugin');
-        var_dump($repository->findBy(array('name' => 'Cron')));
+        $rows = array();
 
+        /** @var Plugin $plugin */
+        foreach ($plugins as $plugin) {
+            $rows[] = array(
+                $plugin->getName(),
+                $plugin->getLabel(),
+                $plugin->getVersion(),
+                $plugin->getAuthor(),
+                $plugin->getActive() ? 'Yes' : 'No'
+            );
+        }
+
+        /** @var TableHelper $table */
+        $table = $this->getHelperSet()->get('table');
+        $table
+            ->setHeaders(array('Plugin', 'Label', 'Version', 'Author', 'Active'))
+            ->setRows($rows)
+        ;
+        $table->render($output);
     }
 }
