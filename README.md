@@ -123,7 +123,13 @@ is as well an established database connections, plugins are manipulable, doctrin
 available as well.
 
 While you can access `Shopware()` and `Enlight()` from within your commands, you should use the service container as it's
-arranging loose coupling and makes testing much easier.
+arranging loose coupling and makes testing much easier:
+
+```php
+
+    /** @var \Shopware $shopware */
+    $shopware = $this->configuration->getService('shopware');
+```
 
 
 Licence
