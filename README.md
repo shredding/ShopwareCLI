@@ -45,7 +45,7 @@ Rename and open the `example.config.yml` to `config.yml`. There are two trees, t
 ShopwareCLI can be configured with multiple shop instances - as this is what you normally have in a development environment.
 If you mount a remote shop into your local drive you can even control remote shops via command line.
 
-Commands are the the available commands inside the system. ShopwareCLI is built for writing command line apps for shopware
+Commands are the available commands inside the system. ShopwareCLI is built for writing command line apps for shopware
 with ease, so you can add your own commands and are ready to use the entire infrastructe.
 
 > It's recommended to create a dedicated composer package for your commands and add them as dependency to composer.json,
