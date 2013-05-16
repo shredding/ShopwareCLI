@@ -1,6 +1,6 @@
 {
     "name": "avantgarde/shopware-cli",
-    "description": "A set of cli tools for shopware 4.x",
+    "description": "An infrastructure framework for cli commands for shopware 4.x",
     "minimum-stability": "stable",
     "authors": [
         {
