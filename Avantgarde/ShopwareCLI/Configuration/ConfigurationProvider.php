@@ -4,7 +4,6 @@
 namespace Avantgarde\ShopwareCLI\Configuration;
 
 
-use Composer\Autoload\ClassLoader;
 use InvalidArgumentException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
@@ -33,11 +32,6 @@ class ConfigurationProvider {
     protected $baseDirectory;
 
     /**
-     * @var ClassLoader
-     */
-    protected $classLoader;
-
-    /**
      * @var array
      */
     protected $configArray;
@@ -54,12 +48,10 @@ class ConfigurationProvider {
 
     /**
      * @param $baseDirectory
-     * @param ClassLoader $classLoader
      */
-    public function __construct($baseDirectory, ClassLoader $classLoader) {
+    public function __construct($baseDirectory) {
 
         $this->baseDirectory = $baseDirectory;
-        $this->classLoader = $classLoader;
         $this->initialIncludePath = get_include_path();
         $this->loadConfiguration();
         $this->loadDependencyInjectionContainer();

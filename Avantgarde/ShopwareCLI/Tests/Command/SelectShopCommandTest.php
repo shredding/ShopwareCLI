@@ -6,9 +6,7 @@ namespace Avantgarde\ShopwareCLI\Tests\Command;
 use Avantgarde\ShopwareCLI\Application;
 use Avantgarde\ShopwareCLI\Command\SelectShopCommand;
 use PHPUnit_Framework_Assert;
-use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**

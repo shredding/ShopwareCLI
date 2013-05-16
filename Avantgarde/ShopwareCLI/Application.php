@@ -26,12 +26,11 @@ class Application extends ConsoleApplication {
     /**
      * Initializes the config.yml (or reads from cache).
      * @param string $baseDirectory
-     * @param $classLoader
      * @return $this
      */
-    public function initializeConfiguration($baseDirectory, $classLoader) {
+    public function initializeConfiguration($baseDirectory) {
 
-        $this->configuration = new ConfigurationProvider($baseDirectory, $classLoader);
+        $this->configuration = new ConfigurationProvider($baseDirectory);
         return $this;
     }
 
