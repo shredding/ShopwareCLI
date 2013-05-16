@@ -50,6 +50,7 @@ EOF
     {
 
         $repository = Shopware()->Models()->getRepository('Shopware\Models\Plugin\Plugin');
+        var_dump($repository->findBy(array('name' => 'Cron')));
 
     }
 }
