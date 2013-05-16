@@ -112,7 +112,7 @@ Here are some examples:
 
 ```php
     $configurationProvider->getShopName();             # return 'foo'
-    $configurationProvider->getShop();                 # returns an array with the shop informations
+    $configurationProvider->getShop();                 # returns an array with the shop information (e.g. path and web)
     $configurationProvider->get('shops');              # returns all shops
     $configurationProvider->get('your_own_config');    # returns the your_own_config from the config.yml as array
     $configurationProvider->getService('filesystem');  # returns an instance of a service as configured in service.yml
