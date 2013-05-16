@@ -131,6 +131,9 @@ arranging loose coupling and makes testing much easier:
     $shopware = $configurationProvider->getService('shopware');
 ```
 
+ShopwareCLI uses some other symfony components like *filesystem* or *dependency-injection*. If you are not familiar with
+these tools, you might want to have a look into the fantastic component documentation, as they are really helping you
+to write testable and maintainable command line applications for shopware.
 
 Licence
 -------
