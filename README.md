@@ -20,7 +20,7 @@ select *dev-stable*.
     composer create-project avantgarde/shopware-cli shopwareCLI dev-master
 ```
 
-This will install your ShopwareCLI into a folder named *shopwareCLI*, inside it, you'll find the following structure:
+This will install your ShopwareCLI into a folder named *shopwareCLI*. Inside it, you'll find the following structure:
 
 ```
     Avantgarde
@@ -120,7 +120,7 @@ Here are some examples:
 
 Inside of the commands execute file, you have access to shopwares global functions such as Shopware() and Enlight(), there
 is as well an established database connections, plugins are manipulable, doctrine is there and so on. Autoloading is
-available as well.
+available as well. You can use large portions of the core code in your own commands.
 
 While you can access `Shopware()` and `Enlight()` from within your commands, you should use the service container as it's
 arranging loose coupling and makes testing much easier:
