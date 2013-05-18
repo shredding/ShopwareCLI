@@ -15,11 +15,8 @@ require_once 'vendor/autoload.php';
 use Avantgarde\ShopwareCLI\Application;
 
 $application = new Application();
-$application->initializeConfiguration(__DIR__)
-            ->initializeCommands()
-            ->registerShop();
-
-$shop = $application->getConfiguration()->getShop();
+$application->initializeEnvironment(__DIR__);
+$shop = $application->getShop();
 
 include_once 'Enlight/Application.php';
 include_once 'Shopware/Application.php';

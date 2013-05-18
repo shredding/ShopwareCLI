@@ -102,28 +102,60 @@ Writing your own commands
 Writing your own commands is easy. Once you have read the symfony console documentation, you are almost perfectly prepared
 to write command line tools for shopware.
 
-However, there are a few thing that are uniqure to ShopwareCLI, like you have to register your command to config.yml.
-
-You might as well need information about the shop, such as it's web url or path. Hence, your commands should implement
-the `ConfigurationAwareInterface`. ShopwareCLI will then inject a `ConfigurationProvider` instance into your command and
-you can use it to access important parameters.
-
-Here are some examples:
-
-```php
-    $configurationProvider->getShopName();             # return 'foo'
-    $configurationProvider->getShop();                 # returns an array with the shop information (e.g. path and web)
-    $configurationProvider->get('shops');              # returns all shops
-    $configurationProvider->get('your_own_config');    # returns the your_own_config from the config.yml as array
-    $configurationProvider->getService('filesystem');  # returns an instance of a service as configured in service.yml
-```
-
 Inside of the commands execute file, you have access to shopwares global functions such as Shopware() and Enlight(), there
 is as well an established database connection, plugins are manipulable, doctrine is there and so on. Autoloading is
 available as well. You can use large portions of the core code in your own commands.
 
-While you can access `Shopware()` and `Enlight()` from within your commands, you should use the service container as it's
-arranging loose coupling and makes testing much easier:
+However, there are a few thing that are uniqure to ShopwareCLI, like you have to register your command to config.yml.
+
+You might as well need information about the shop, such as it's web url or path and you will want to access the shopware
+core functionality.
+
+The basic way to do this is to implement the `EnvironmentAwareInterface` in your commands. It will inject everything you need,
+as you can see in the Interface footprint.
+
+However, normally you just want to extend `ShopwareCommand` when writing a new command. It's pushed at the end of symfony's
+command chain and does the implementation for you and gives you some nice shortcuts.
+
+Here are some examples:
+
+```php
+
+    class YourCommand extends ShopwareCommand {
+
+        protected function execute(InputInterface $input, OutputInterface $output)
+
+        // Shopinformation
+        $this->shop->getName();                 # Name of the shop as configured in config.yml
+        $this->shop->getPath();                 # Root path of the configured shop
+        $this->shop->getWeb();                  # Web address of the Shop
+        $this->shop->getShopwareInstance();     # Accessor to the Shopware() global function
+        $this->shop->getEnlightInstance();      # Accessor to the Enlight() global function
+
+        // There are as well some shortcuts
+        $this->shop->getRepository($fullyQualifiedModelClassName);
+        $this->shop->getDb();
+
+        // Services can be accessed like this:
+        $this->getService($serviceName);
+
+        // The configuration is available like this:
+        $this->configuration->get('shops');         # Returns all configured shops as array;
+        $this->configuration->getBaseDirectory();   # Returns the base directory of shopware CLI
+        $this->configuration->getShopByName($name); # Returns a shop by the configured name
+
+        // You can define your own configuration structure in config.yml and access it as
+        // array like this:
+        $this->configuration->get('your_configuration');
+        }
+
+    }
+
+```
+
+While you can access `Shopware()` and `Enlight()` from within your commands, you should use ShopwareCLI's shop wrapper,
+as available via `$this->shop`. It's a wrapper around Shopwares core functionality and since it's injected into the
+command by the application, it's loosly coupled - and makes testing much easier.
 
 ```php
 

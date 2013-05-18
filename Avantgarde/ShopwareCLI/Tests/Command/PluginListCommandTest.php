@@ -58,38 +58,18 @@ class PluginListCommandTest extends PHPUnit_Framework_TestCase {
                         $this->returnValue($builder)
                    );
 
+        $shop = $this->getMock('Avantgarde\ShopwareCLI\Shop', array('getRepository'));
+        $shop->expects($this->once())
+             ->method('getRepository')
+             ->with('Shopware\Models\Plugin\Plugin')
+             ->will(
+                 $this->returnValue($repository)
+             );
 
-        $modelManager = $this->getMock('Shopware\Components\Model\ModelManager', array('getRepository'));
-        $modelManager->expects($this->once())
-                     ->method('getRepository')
-                     ->with('Shopware\Models\Plugin\Plugin')
-                     ->will(
-                         $this->returnValue($repository)
-                     );
-
-
-
-        $shopware = $this->getMock('\Shopware', array('Models'));
-        $shopware->expects($this->once())
-                  ->method('Models')
-                  ->will(
-                    $this->returnValue($modelManager)
-                  );
-
-        $configuration = $this->getMockBuilder('Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $configuration->expects($this->once())
-            ->method('getService')
-            ->with('shopware')
-            ->will(
-                $this->returnValue($shopware)
-            );
+        $pluginList = new PluginListCommand();
+        $pluginList->setShop($shop);
 
         $application = new Application();
-        $pluginList = new PluginListCommand();
-        $pluginList->setConfiguration($configuration);
-
         $application->add($pluginList);
 
         $command = $application->find('plugin:list');

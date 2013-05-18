@@ -19,17 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @link       http://digitale-avantgarde.com
  * @since      File available since Release 1.0.0
  */
-class PluginListCommand extends Command implements ConfigurationAwareInterface {
-
-    /**
-     * @var ConfigurationProvider
-     */
-    protected $configuration;
-
-    public function setConfiguration(ConfigurationProvider $configurationProvider)
-    {
-        $this->configuration = $configurationProvider;
-    }
+class PluginListCommand extends ShopwareCommand {
 
     protected function configure()
     {
@@ -51,8 +41,8 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var \Shopware $shopware */
-        $shopware = $this->configuration->getService('shopware');
-        $repository = $shopware->Models()->getRepository('Shopware\Models\Plugin\Plugin');
+
+        $repository = $this->shop->getRepository('Shopware\Models\Plugin\Plugin');
         $builder = $repository->createQueryBuilder('plugin');
         $builder->addOrderBy('plugin.name');
         $plugins = $builder->getQuery()->execute();

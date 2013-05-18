@@ -4,6 +4,7 @@ namespace Avantgarde\ShopwareCLI\Tests\Command;
 
 
 use Avantgarde\ShopwareCLI\Application;
+use Avantgarde\ShopwareCLI\Shop;
 use Avantgarde\ShopwareCLI\Command\SelectShopCommand;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_TestCase;
@@ -17,6 +18,19 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @since      File available since Release 1.0.0
  */
 class SelectShopCommandTest extends PHPUnit_Framework_TestCase {
+
+    /**
+     * @var SelectShopCommand
+     */
+    protected $command;
+
+    public function setUp() {
+        $this->command = new SelectShopCommand();
+
+        $mockedShop = new Shop();
+        $mockedShop->setName('Test');
+        $this->command->setShop($mockedShop);
+    }
 
     /**
      * @test
@@ -36,10 +50,9 @@ class SelectShopCommandTest extends PHPUnit_Framework_TestCase {
             );
 
         $application = new Application();
-        $select = new SelectShopCommand();
-        $select->setConfiguration($configuration);
+        $this->command->setConfiguration($configuration);
 
-        $application->add($select);
+        $application->add($this->command);
 
         $command = $application->find('select');
         $commandTester = new CommandTester($command);
@@ -66,10 +79,9 @@ class SelectShopCommandTest extends PHPUnit_Framework_TestCase {
             );
 
         $application = new Application();
-        $select = new SelectShopCommand();
-        $select->setConfiguration($configuration);
+        $this->command->setConfiguration($configuration);
 
-        $application->add($select);
+        $application->add($this->command);
 
         $command = $application->find('select');
         $commandTester = new CommandTester($command);
@@ -95,15 +107,15 @@ class SelectShopCommandTest extends PHPUnit_Framework_TestCase {
             );
 
         $application = $this->getMock('Avantgarde\ShopwareCLI\Application', array('registerShop'));
+
         $application->expects($this->once())
                           ->method('registerShop')
                           ->with('existingShop');
 
-        $select = new SelectShopCommand();
-        $select->setConfiguration($configuration);
+        $this->command->setConfiguration($configuration);
 
         /** @var Application $application */
-        $application->add($select);
+        $application->add($this->command);
 
         $command = $application->find('select');
         $commandTester = new CommandTester($command);

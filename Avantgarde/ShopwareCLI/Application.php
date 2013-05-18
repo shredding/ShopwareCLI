@@ -1,12 +1,15 @@
 <?php
 
 namespace Avantgarde\ShopwareCLI;
-use Avantgarde\ShopwareCLI\Command\ConfigurationAwareInterface;
+use Avantgarde\ShopwareCLI\Command\EnvironmentAwareInterface;
 use Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider;
-use Composer\Autoload\ClassLoader;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
 
 
 /**
@@ -24,36 +27,48 @@ class Application extends ConsoleApplication {
     protected $configuration;
 
     /**
-     * Initializes the config.yml (or reads from cache).
+     * @var Container
+     */
+    protected $container;
+
+    /**
+     * @var Shop
+     */
+    protected $shop;
+
+    /**
      * @param string $baseDirectory
      * @return $this
      */
-    public function initializeConfiguration($baseDirectory) {
-
+    public function initializeEnvironment($baseDirectory) {
         $this->configuration = new ConfigurationProvider($baseDirectory);
-        return $this;
-    }
+        $this->registerShop();
+        $this->loadDependencyInjectionContainer();
 
-    public function initializeCommands() {
-        $commands = $this->configuration->get('commands');
-        foreach ($commands as $class) {
-            /** @var Command $command */
-            $command = new $class();
-
-            if ($command instanceof ConfigurationAwareInterface) {
-                /** @var ConfigurationAwareInterface $command */
-                $command->setConfiguration($this->configuration);
-            }
-            $this->add($command);
-        }
+        // Everything is set up, let's init the commands!
+        $this->initializeCommands();
 
         return $this;
     }
 
     /**
+     * @return ConfigurationProvider
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * @return \Avantgarde\ShopwareCLI\Shop
+     */
+    public function getShop()
+    {
+        return $this->shop;
+    }
+
+    /**
      * Registers a shopware shop.
-     *
-     * That means, that
      *
      * @param string $name
      * @return $this
@@ -75,30 +90,50 @@ class Application extends ConsoleApplication {
             }
         }
 
-        $shop = $this->configuration->getShopByName($name);
-        $shopPath = $shop['path'];
+        $shopArray = $this->configuration->getShopByName($name);
+
+        $this->shop = new Shop();
+        $this->shop->setName($name)
+            ->setPath($shopArray['path'])
+            ->setWeb($shopArray['web']);
 
         // Configure autoloader for shop
         set_include_path(
             get_include_path() . PATH_SEPARATOR .
-            $shopPath . '/engine/Library/' . PATH_SEPARATOR .
-            $shopPath . '/engine/' . PATH_SEPARATOR .
-            $shopPath . '/templates/' . PATH_SEPARATOR .
-            $shopPath
+            $this->shop->getPath() . '/engine/Library/' . PATH_SEPARATOR .
+            $this->shop->getPath() . '/engine/' . PATH_SEPARATOR .
+            $this->shop->getPath() . '/templates/' . PATH_SEPARATOR .
+            $this->shop->getPath()
         );
-
-        $this->configuration->setShopName($name);
 
         return $this;
     }
 
 
-    /**
-     * @return ConfigurationProvider
-     */
-    public function getConfiguration()
+    protected function initializeCommands() {
+        $commands = $this->configuration->get('commands');
+        foreach ($commands as $class) {
+            /** @var Command $command */
+            $command = new $class();
+
+            if ($command instanceof EnvironmentAwareInterface) {
+                /** @var EnvironmentAwareInterface $command */
+                $command->setConfiguration($this->configuration)
+                        ->setServiceContainer($this->container)
+                        ->setShop($this->shop);
+            }
+            $this->add($command);
+        }
+
+        return $this;
+    }
+
+
+    protected function loadDependencyInjectionContainer()
     {
-        return $this->configuration;
+        $this->container = new ContainerBuilder();
+        $loader = new YamlFileLoader($this->container, new FileLocator($this->configuration->getBaseDirectory()));
+        $loader->load(ConfigurationProvider::SERVICE_FILE);
     }
 
 }

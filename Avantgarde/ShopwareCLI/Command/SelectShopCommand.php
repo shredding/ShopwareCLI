@@ -17,17 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @link       http://digitale-avantgarde.com
  * @since      File available since Release 1.0.0
  */
-class SelectShopCommand extends Command implements ConfigurationAwareInterface {
-
-    /**
-     * @var ConfigurationProvider
-     */
-    protected $configuration;
-
-    public function setConfiguration(ConfigurationProvider $configurationProvider)
-    {
-        $this->configuration = $configurationProvider;
-    }
+class SelectShopCommand extends ShopwareCommand {
 
     protected function configure()
     {
@@ -59,13 +49,12 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $name = $input->getArgument('shop');
         $availableShops = $this->configuration->get('shops');
 
         if (empty($name)) {
             $output->writeln('');
-            $output->writeln(sprintf('The currently selected shop is <info>%s</info>.', $this->configuration->getShopName()));
+            $output->writeln(sprintf('The currently selected shop is <info>%s</info>.', $this->shop->getName()));
             $output->writeln('');
             $output->writeln(sprintf('Available shops are: %s.', implode(', ', array_keys($availableShops))));
             return 1;

@@ -16,17 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @link       http://digitale-avantgarde.com
  * @since      File available since Release 1.0.0
  */
-class CacheClearCommand extends Command implements ConfigurationAwareInterface {
-
-    /**
-     * @var ConfigurationProvider
-     */
-    protected $configuration;
-
-    public function setConfiguration(ConfigurationProvider $configurationProvider)
-    {
-        $this->configuration = $configurationProvider;
-    }
+class CacheClearCommand extends ShopwareCommand {
 
     protected function configure()
     {
@@ -66,14 +56,12 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $fs = $this->configuration->getService('filesystem');
-        $shop = $this->configuration->getShop();
-        $baseDir = $shop['path'];
+        $fs = $this->getService('filesystem');
 
         $caches = array(
-             'templates' => $baseDir . '/cache/templates',
-             'database' => $baseDir . '/cache/database',
-             'proxies'  => $baseDir . '/engine/Shopware/Proxies'
+             'templates' => $this->shop->getPath() . '/cache/templates',
+             'database' => $this->shop->getPath() . '/cache/database',
+             'proxies'  => $this->shop->getPath() . '/engine/Shopware/Proxies'
         );
 
         $atLeastOneFlagSet = FALSE;
@@ -105,7 +93,5 @@ EOF
             $fs->mkdir($caches);
             $output->writeln('<info>All Caches have been cleared.</info>');
         }
-
     }
-
 }

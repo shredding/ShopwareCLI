@@ -3,6 +3,8 @@
 
 namespace Avantgarde\ShopwareCLI\Tests\Command;
 use Avantgarde\ShopwareCLI\Command\CacheClearCommand;
+use Avantgarde\ShopwareCLI\Shop;
+use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -21,7 +23,7 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
      */
-    protected $configuration;
+    protected $command;
 
     /**
      * @var array
@@ -33,16 +35,11 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
     );
 
     public function setUp() {
-        $this->configuration = $this->getMockBuilder('Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
 
-
-        $this->configuration->expects($this->once())
-            ->method('getShop')
-            ->will(
-                $this->returnValue(array('path' => 'foo'))
-            );
+        $mockedShop = new Shop();
+        $mockedShop->setPath('foo');
+        $this->command = new CacheClearCommand();
+        $this->command->setShop($mockedShop);
 
     }
 
@@ -59,20 +56,18 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
             ->method('mkdir')
             ->with($this->caches);
 
-        $this->configuration->expects($this->once())
-            ->method('getService')
-            ->with('filesystem')
+        $container = $this->getMock('Symfony\Component\DependencyInjection\Container', array('get'));
+        $container->expects($this->once())
+            ->method('get')
             ->will(
                 $this->returnValue($fs)
             );
 
-
-        $cc = new CacheClearCommand();
-        $cc->setConfiguration($this->configuration);
+        $this->command->setServiceContainer($container);
 
         /** @var Application $application */
         $application = new Application();
-        $application->add($cc);
+        $application->add($this->command);
 
         $command = $application->find('cache:clear');
         $commandTester = new CommandTester($command);
@@ -91,20 +86,18 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
             ->method('mkdir')
             ->with(array($this->caches['templates']));
 
-        $this->configuration->expects($this->once())
-            ->method('getService')
-            ->with('filesystem')
+        $container = $this->getMock('Symfony\Component\DependencyInjection\Container', array('get'));
+        $container->expects($this->once())
+            ->method('get')
             ->will(
                 $this->returnValue($fs)
             );
 
-
-        $cc = new CacheClearCommand();
-        $cc->setConfiguration($this->configuration);
+        $this->command->setServiceContainer($container);
 
         /** @var Application $application */
         $application = new Application();
-        $application->add($cc);
+        $application->add($this->command);
 
         $command = $application->find('cache:clear');
         $commandTester = new CommandTester($command);
@@ -123,20 +116,18 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
             ->method('mkdir')
             ->with(array($this->caches['database']));
 
-        $this->configuration->expects($this->once())
-            ->method('getService')
-            ->with('filesystem')
+        $container = $this->getMock('Symfony\Component\DependencyInjection\Container', array('get'));
+        $container->expects($this->once())
+            ->method('get')
             ->will(
                 $this->returnValue($fs)
             );
 
-
-        $cc = new CacheClearCommand();
-        $cc->setConfiguration($this->configuration);
+        $this->command->setServiceContainer($container);
 
         /** @var Application $application */
         $application = new Application();
-        $application->add($cc);
+        $application->add($this->command);
 
         $command = $application->find('cache:clear');
         $commandTester = new CommandTester($command);
@@ -155,20 +146,18 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
             ->method('mkdir')
             ->with(array($this->caches['proxies']));
 
-        $this->configuration->expects($this->once())
-            ->method('getService')
-            ->with('filesystem')
+        $container = $this->getMock('Symfony\Component\DependencyInjection\Container', array('get'));
+        $container->expects($this->once())
+            ->method('get')
             ->will(
                 $this->returnValue($fs)
             );
 
-
-        $cc = new CacheClearCommand();
-        $cc->setConfiguration($this->configuration);
+        $this->command->setServiceContainer($container);
 
         /** @var Application $application */
         $application = new Application();
-        $application->add($cc);
+        $application->add($this->command);
 
         $command = $application->find('cache:clear');
         $commandTester = new CommandTester($command);

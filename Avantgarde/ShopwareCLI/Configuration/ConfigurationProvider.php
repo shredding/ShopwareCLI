@@ -10,7 +10,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
  * @package    ShopwareCLI
@@ -37,29 +36,35 @@ class ConfigurationProvider {
     protected $configArray;
 
     /**
-     * @var string
-     */
-    protected $shopName;
-
-    /**
-     * @var Container
-     */
-    protected $container;
-
-    /**
      * @param $baseDirectory
      */
     public function __construct($baseDirectory) {
-
         $this->baseDirectory = $baseDirectory;
-        $this->initialIncludePath = get_include_path();
-        $this->loadConfiguration();
-        $this->loadDependencyInjectionContainer();
 
+        // Load configuration file or retrieve from cache ...
+        $cacheFile = $this->baseDirectory . DIRECTORY_SEPARATOR . self::TEMP_DIRECTORY . DIRECTORY_SEPARATOR . self::CONFIG_CACHE_FILE;
+        $cache = new ConfigCache($cacheFile, TRUE);
+
+        if (!$cache->isFresh()) {
+
+            $locator = new FileLocator($this->baseDirectory);
+            $locator->locate(self::CONFIG_FILE, NULL, TRUE);
+            $config = new ConfigLoader($locator);
+            $this->configArray = $config->load(self::CONFIG_FILE);
+
+            $cachedCode = sprintf("<?php return %s;", var_export($this->configArray, TRUE));
+            $configFileResource = new FileResource($this->baseDirectory . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
+            $cache->write($cachedCode, array($configFileResource));
+
+        } else {
+            $this->configArray = require_once $cacheFile;
+        }
     }
 
 
     /**
+     * Returns a value from the configuration.
+     *
      * @param $key
      * @return mixed
      */
@@ -72,6 +77,8 @@ class ConfigurationProvider {
     }
 
     /**
+     * Returns the base directory of the application.
+     *
      * @return string
      */
     public function getBaseDirectory()
@@ -80,13 +87,8 @@ class ConfigurationProvider {
     }
 
     /**
-     * @return array
-     */
-    public function getShop() {
-        return $this->configArray['shops'][$this->shopName];
-    }
-
-    /**
+     * Returns the first configured shop.
+     *
      * @return array
      */
     public function getFirstShopName() {
@@ -94,6 +96,8 @@ class ConfigurationProvider {
     }
 
     /**
+     * Returns a shop by name.
+     *
      * @param string $name
      * @return array
      * @throws \InvalidArgumentException if shop does not exist or is improperly configured
@@ -114,70 +118,6 @@ class ConfigurationProvider {
         return $this->configArray['shops'][$name];
     }
 
-    public function setShopName($name) {
-        $this->shopName = $name;
-    }
 
-    /**
-     * @return string
-     */
-    public function getShopName()
-    {
-        return $this->shopName;
-    }
-
-    /**
-     * @param string $name
-     * @return object
-     */
-    public function getService($name)
-    {
-
-        switch (strtolower($name)) {
-
-            case 'shopware':
-                return Shopware();
-
-            case 'enlight':
-                return Enlight();
-
-            default:
-                return $this->container->get($name);
-        }
-
-    }
-
-    /**
-     * Loads the configuration YAML file.
-     */
-    protected function loadConfiguration()
-    {
-        // We use debug mode as CLI is always fast and we do not want to clear the cache when we
-        // have changed something!
-        $cacheFile = $this->baseDirectory . DIRECTORY_SEPARATOR . self::TEMP_DIRECTORY . DIRECTORY_SEPARATOR . self::CONFIG_CACHE_FILE;
-        $cache = new ConfigCache($cacheFile, TRUE);
-
-        if (!$cache->isFresh()) {
-
-            $locator = new FileLocator($this->baseDirectory);
-            $locator->locate(self::CONFIG_FILE, NULL, TRUE);
-            $config = new ConfigLoader($locator);
-            $this->configArray = $config->load(self::CONFIG_FILE);
-
-            $cachedCode = sprintf("<?php return %s;", var_export($this->configArray, TRUE));
-            $configFileResource = new FileResource($this->baseDirectory . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
-            $cache->write($cachedCode, array($configFileResource));
-
-        } else {
-            $this->configArray = require_once $cacheFile;
-        }
-
-    }
-    protected function loadDependencyInjectionContainer()
-    {
-        $this->container = new ContainerBuilder();
-        $loader = new YamlFileLoader($this->container, new FileLocator($this->baseDirectory));
-        $loader->load(self::SERVICE_FILE);
-    }
 
 }
