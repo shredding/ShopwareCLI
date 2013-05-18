@@ -21,18 +21,23 @@ class PluginListCommandTest extends PHPUnit_Framework_TestCase {
      * We have to build up a long mocking chain - as shopware does not provide
      * an own service container.
      *
-     * However, we're not testing the output, but if the repository configuration is correct
-     * and if the correct result is executed.
-     *
      * @test
      */
     public function retrievesAllPluginsOrderedByName()
     {
 
+        $plugin = new MockedPlugin();
+        $anotherPlugin = new MockedPlugin();
+        $anotherPlugin->author = 'Another author';
+        $anotherPlugin->label = 'Another label';
+        $anotherPlugin->name = 'Another name';
+        $anotherPlugin->active = TRUE;
+
         $query = $this->getMock('Doctrine\ORM\Query', array('execute'));
         $query->expects($this->once())
               ->method('execute')
-              ->will($this->returnValue(array()));
+              ->will($this->returnValue(
+                array($plugin, $anotherPlugin)));
 
         $builder = $this->getMock('Doctrine\ORM\QueryBuilder', array('addOrderBy', 'getQuery'));
         $builder->expects($this->once())
@@ -91,6 +96,44 @@ class PluginListCommandTest extends PHPUnit_Framework_TestCase {
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
+        $this->assertRegExp('/A name/', $commandTester->getDisplay());
+        $this->assertRegExp('/A label/', $commandTester->getDisplay());
+        $this->assertRegExp('/An author/', $commandTester->getDisplay());
+        $this->assertRegExp('/No/', $commandTester->getDisplay());
+
+        $this->assertRegExp('/Another name/', $commandTester->getDisplay());
+        $this->assertRegExp('/Another label/', $commandTester->getDisplay());
+        $this->assertRegExp('/Another author/', $commandTester->getDisplay());
+        $this->assertRegExp('/Yes/', $commandTester->getDisplay());
+
     }
 
+}
+
+class MockedPlugin
+{
+
+    public $name = 'A name';
+    public $label = 'A label';
+    public $author = 'An author';
+    public $active = FALSE;
+
+    public function __call($method, $arguments)
+    {
+
+        switch ($method) {
+            case 'getActive':
+                return $this->active;
+
+            case 'getName':
+                return $this->name;
+
+            case 'getLabel':
+                return $this->label;
+
+            case 'getAuthor':
+                return $this->author;
+
+        }
+    }
 }
