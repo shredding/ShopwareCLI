@@ -108,14 +108,14 @@ available as well. You can use large portions of the core code in your own comma
 
 However, there are a few thing that are uniqure to ShopwareCLI, like you have to register your command to config.yml.
 
-You might as well need information about the shop, such as it's web url or path and you will want to access the shopware
-core functionality.
+You might as well need information about the shop, such as it's web url or path and you will want to write unit tests for
+your commands.
 
 The basic way to do this is to implement the `EnvironmentAwareInterface` in your commands. It will inject everything you need,
 as you can see in the Interface footprint.
 
 However, normally you just want to extend `ShopwareCommand` when writing a new command. It's pushed at the end of symfony's
-command chain and does the implementation for you and gives you some nice shortcuts.
+command's inheritance chain and does the implementation for you and gives you some nice shortcuts.
 
 Here are some examples:
 
@@ -156,12 +156,6 @@ Here are some examples:
 While you can access `Shopware()` and `Enlight()` from within your commands, you should use ShopwareCLI's shop wrapper,
 as available via `$this->shop`. It's a wrapper around Shopwares core functionality and since it's injected into the
 command by the application, it's loosly coupled - and makes testing much easier.
-
-```php
-
-    /** @var \Shopware $shopware */
-    $shopware = $configurationProvider->getService('shopware');
-```
 
 ShopwareCLI uses some other symfony components like *filesystem* or *dependency-injection*. If you are not familiar with
 these tools, you might want to have a look into the fantastic component documentation, as they are really helping you
