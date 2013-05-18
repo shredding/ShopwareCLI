@@ -71,11 +71,10 @@ EOF
         $baseDir = $shop['path'];
 
         $caches = array(
-             'template' => $baseDir . '/cache/templates',
+             'templates' => $baseDir . '/cache/templates',
              'database' => $baseDir . '/cache/database',
              'proxies'  => $baseDir . '/engine/Shopware/Proxies'
         );
-
 
         $atLeastOneFlagSet = FALSE;
 
