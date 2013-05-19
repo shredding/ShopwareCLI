@@ -41,9 +41,9 @@ class Application extends ConsoleApplication {
      * @return $this
      */
     public function initializeEnvironment($baseDirectory) {
-        $this->configuration = new ConfigurationProvider($baseDirectory);
+        $this->loadDependencyInjectionContainer($baseDirectory);
+        $this->configuration = new ConfigurationProvider($baseDirectory, $this->container);
         $this->registerShop();
-        $this->loadDependencyInjectionContainer();
 
         // Everything is set up, let's init the commands!
         $this->initializeCommands();
@@ -129,10 +129,13 @@ class Application extends ConsoleApplication {
     }
 
 
-    protected function loadDependencyInjectionContainer()
+    /**
+     * @param string $baseDir
+     */
+    protected function loadDependencyInjectionContainer($baseDir)
     {
         $this->container = new ContainerBuilder();
-        $loader = new YamlFileLoader($this->container, new FileLocator($this->configuration->getBaseDirectory()));
+        $loader = new YamlFileLoader($this->container, new FileLocator($baseDir));
         $loader->load(ConfigurationProvider::SERVICE_FILE);
     }
 

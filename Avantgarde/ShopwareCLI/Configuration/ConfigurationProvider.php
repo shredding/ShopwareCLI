@@ -37,17 +37,20 @@ class ConfigurationProvider {
 
     /**
      * @param $baseDirectory
+     * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
+     * @internal param \Symfony\Component\DependencyInjection\Container $container
      */
-    public function __construct($baseDirectory) {
+    public function __construct($baseDirectory, Container $serviceContainer) {
         $this->baseDirectory = $baseDirectory;
 
         // Load configuration file or retrieve from cache ...
-        $cacheFile = $this->baseDirectory . DIRECTORY_SEPARATOR . self::TEMP_DIRECTORY . DIRECTORY_SEPARATOR . self::CONFIG_CACHE_FILE;
-        $cache = new ConfigCache($cacheFile, TRUE);
+        /** @var ConfigCache $cache */
+        $cache = $serviceContainer->get('config_cache');
 
         if (!$cache->isFresh()) {
 
-            $locator = new FileLocator($this->baseDirectory);
+            /** @var FileLocator $locator */
+            $locator = $serviceContainer->get('filelocator');
             $locator->locate(self::CONFIG_FILE, NULL, TRUE);
             $config = new ConfigLoader($locator);
             $this->configArray = $config->load(self::CONFIG_FILE);
@@ -57,7 +60,7 @@ class ConfigurationProvider {
             $cache->write($cachedCode, array($configFileResource));
 
         } else {
-            $this->configArray = require_once $cacheFile;
+            $this->configArray = require_once $cache->__toString();
         }
     }
 

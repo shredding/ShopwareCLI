@@ -33,14 +33,14 @@ $config['cache'] = array(
         'hashed_directory_umask'    => 505,
         'cache_file_umask'          => 420,
         'hashed_directory_level'    => 3,
-        'cache_dir'                 => $application->getConfiguration()->getBaseDirectory() . '/tmp',
+        'cache_dir'                 => __DIR__ . '/tmp',
         'file_name_prefix'          => 'shopware_cli'
     )
 );
 $config['model'] = array(
-    'proxyDir'          =>  $shop['path'] . '/engine/Shopware/Proxies',
+    'proxyDir'          =>  $shop->getPath() . '/engine/Shopware/Proxies',
     'proxyNamespace'    =>  'Shopware\Proxies',
-    'attributeDir'      =>  $application->getConfiguration()->getBaseDirectory() . '/tmp',
+    'attributeDir'      =>  __DIR__ . '/tmp',
 );
 
 $shopware = new Shopware('development', $config);
