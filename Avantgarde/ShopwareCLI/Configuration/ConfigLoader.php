@@ -13,8 +13,21 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigLoader extends FileLoader
 {
-    public function load($resource, $type = null)
+    /**
+     * @var string
+     */
+    protected $resource;
+
+    public function setResource($resource) {
+        $this->resource = $resource;
+    }
+
+    public function load($resource = NULL, $type = null)
     {
+        if ($resource === NULL) {
+            $resource = $this->resource;
+        }
+
         return Yaml::parse($resource);
     }
 

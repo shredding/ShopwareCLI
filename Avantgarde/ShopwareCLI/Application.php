@@ -42,7 +42,8 @@ class Application extends ConsoleApplication {
      */
     public function initializeEnvironment($baseDirectory) {
         $this->loadDependencyInjectionContainer($baseDirectory);
-        $this->configuration = new ConfigurationProvider($baseDirectory, $this->container);
+        $this->configuration = new ConfigurationProvider($baseDirectory);
+        $this->configuration->load();
         $this->registerShop();
 
         // Everything is set up, let's init the commands!

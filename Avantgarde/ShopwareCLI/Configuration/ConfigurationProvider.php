@@ -20,9 +20,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class ConfigurationProvider {
 
-    const CONFIG_FILE = 'config/config.yml';
+    const CONFIG_FILE = '/config/config.yml';
     const SERVICE_FILE = 'config/services.yml';
-    const CONFIG_CACHE_FILE = 'config_cache.php';
+    const CONFIG_CACHE_FILE = '/config_cache.php';
     const TEMP_DIRECTORY = 'tmp';
 
     /**
@@ -37,23 +37,24 @@ class ConfigurationProvider {
 
     /**
      * @param $baseDirectory
-     * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
-     * @internal param \Symfony\Component\DependencyInjection\Container $container
      */
-    public function __construct($baseDirectory, Container $serviceContainer) {
+    public function __construct($baseDirectory) {
         $this->baseDirectory = $baseDirectory;
+    }
 
+    public function load() {
         // Load configuration file or retrieve from cache ...
         /** @var ConfigCache $cache */
-        $cache = $serviceContainer->get('config_cache');
+        $cache = new ConfigCache($this->baseDirectory . self::CONFIG_CACHE_FILE, TRUE);
 
         if (!$cache->isFresh()) {
 
+            $configFile = $this->baseDirectory . self::CONFIG_FILE;
             /** @var FileLocator $locator */
-            $locator = $serviceContainer->get('filelocator');
-            $locator->locate(self::CONFIG_FILE, NULL, TRUE);
+            $locator = new FileLocator();
+            $locator->locate($configFile, NULL, TRUE);
             $config = new ConfigLoader($locator);
-            $this->configArray = $config->load(self::CONFIG_FILE);
+            $this->configArray = $config->load($configFile);
 
             $cachedCode = sprintf("<?php return %s;", var_export($this->configArray, TRUE));
             $configFileResource = new FileResource($this->baseDirectory . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
@@ -92,10 +93,15 @@ class ConfigurationProvider {
     /**
      * Returns the first configured shop.
      *
-     * @return array
+     * @return string
      */
     public function getFirstShopName() {
-        return key(reset($this->configArray));
+
+        if (isset($this->configArray['shops'])) {
+            $name = reset(array_keys($this->configArray['shops']));
+            return $name !== FALSE ? $name : NULL;
+        }
+        return NULL;
     }
 
     /**

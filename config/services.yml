@@ -1,20 +1,10 @@
 parameters:
-    # Class definitions
+    # +++ Class definitions +++
     filesystem.class: Symfony\Component\Filesystem\Filesystem
-    config_cache.class: Symfony\Component\Config\ConfigCache
-    filelocator.class: Symfony\Component\Config\FileLocator
 
-    # Constant definitions
-    config_cache.filepath: ../tmp/config.cache.php
 
 services:
 
+    # +++ General services +++
     filesystem:
-        class: "%filesystem.class%"
-
-    config_cache:
-        class: "%config_cache.class%"
-        arguments: ["%config_cache.filepath%", true]
-
-    filelocator:
-        class: "%filelocater.class%"
+            class: "%filesystem.class%"
