@@ -2,6 +2,7 @@
     "name": "avantgarde/shopware-cli",
     "description": "An infrastructure framework for cli commands for shopware 4.x",
     "minimum-stability": "stable",
+    "license": "GPL-3.0+",
     "authors": [
         {
             "name": "Christian Peters",
