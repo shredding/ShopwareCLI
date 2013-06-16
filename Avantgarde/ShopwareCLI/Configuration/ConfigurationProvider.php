@@ -98,7 +98,9 @@ class ConfigurationProvider {
     public function getFirstShopName() {
 
         if (isset($this->configArray['shops'])) {
-            $name = reset(array_keys($this->configArray['shops']));
+
+            $shop = array_keys($this->configArray['shops']);
+            $name = $shop[0];
             return $name !== FALSE ? $name : NULL;
         }
         return NULL;
