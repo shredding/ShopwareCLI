@@ -46,10 +46,10 @@ $config['cache'] = array(
     )
 );
 $config['model'] = array(
-    'attributeDir'      =>  __DIR__ . '/tmp',
     'proxyNamespace'    =>  'Shopware\Proxies',
-    'fileCacheDir'     =>   __DIR__ . '/tmp',
-    'proxyDir'          =>  $shop->getPath() . '/cache/proxies'
+    'proxyDir'          =>  $shop->getPath() . '/cache/proxies',
+    'fileCacheDir'      =>  $shop->getPath() . '/cache/doctrine/filecache',
+    'attributeDir'      =>  $shop->getPath() . '/cache/doctrine/attributes'
 );
 
 $config['hook'] = array(

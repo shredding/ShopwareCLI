@@ -36,14 +36,20 @@ class CacheClearCommand extends ShopwareCommand {
                 'Clears the database cache.'
             )
             ->addOption(
+                'doctrine',
+                'm',
+                InputOption::VALUE_NONE,
+                'Clears doctrines cache.'
+            )
+            ->addOption(
                 'proxies',
                 'p',
                 InputOption::VALUE_NONE,
-                'Clears the database cache.'
+                'Clears proxies cache.'
             )
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command clears the entire cache if no flags are set.
-If template, database or proxy flags are set, then only these caches are deleted.
+If template, database, doctrine or proxy flags are set, then only these caches are deleted.
 EOF
             );
     }
@@ -61,13 +67,19 @@ EOF
         $caches = array(
              'templates' => $this->shop->getPath() . '/cache/templates',
              'database' => $this->shop->getPath() . '/cache/database',
-             'proxies'  => $this->shop->getPath() . '/cache/proxies'
+             'proxies' => $this->shop->getPath() . '/cache/proxies',
+             'doctrine_attributes'  => $this->shop->getPath() . '/cache/doctrine/attributes',
+             'doctrine_filecache'  => $this->shop->getPath() . '/cache/doctrine/filecache',
+             'doctrine_proxies'  => $this->shop->getPath() . '/cache/doctrine/proxies',
         );
 
         // TODO: Drop this when we stop supporting 4.0 (as of 4.2)
         $minorVersion = (int)explode('.', $this->shop->getVersion())[1];
         if ($minorVersion === 0) {
             $caches['proxies'] = $this->shop->getPath() . '/engine/Shopware/Proxies';
+            unset($caches['doctrine_attributes']);
+            unset($caches['doctrine_filecache']);
+            unset($caches['doctrine_proxies']);
         }
 
         $atLeastOneFlagSet = FALSE;
@@ -87,10 +99,17 @@ EOF
             $atLeastOneFlagSet = TRUE;
         }
 
+        if ($input->getOption('doctrine')) {
+            $fs->remove(array($caches['doctrine_attributes'], $caches['doctrine_filecache'], $caches['doctrine_proxies']));
+            $fs->mkdir(array($caches['doctrine_attributes'], $caches['doctrine_filecache'], $caches['doctrine_proxies']));
+            $output->writeln('<info>Doctrine Cache has been cleared.</info>');
+            $atLeastOneFlagSet = TRUE;
+        }
+
         if ($input->getOption('proxies')) {
             $fs->remove(array($caches['proxies']));
             $fs->mkdir(array($caches['proxies']));
-            $output->writeln('<info>Proxy Cache has been cleared.</info>');
+            $output->writeln('<info>Doctrine Cache has been cleared.</info>');
             $atLeastOneFlagSet = TRUE;
         }
 
