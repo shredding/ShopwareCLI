@@ -27,7 +27,7 @@ $shop->setVersion(Shopware::VERSION);
 
 $config = require_once 'config.php';
 $config['cache'] = array(
-    'backend'           =>  'BlackHole',
+    'backend'           =>  'Black-Hole',
     'frontendOptions'   =>  array(
         'automatic_serialization'   => TRUE,
         'automatic_cleaning_factor' => 0,
