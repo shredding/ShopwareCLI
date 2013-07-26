@@ -32,7 +32,7 @@ This will install your ShopwareCLI into a folder named *shopwareCLI*. Inside it,
 
     config
         example.config.yml        # A sample configuration file
-        phpunit.xml.dist          # Configuration for the test suite
+        phpunit.xml               # Configuration for the test suite
         services.yml              # Dependency Injection Configuration
 
     tmp                           # An internal directory for caching
