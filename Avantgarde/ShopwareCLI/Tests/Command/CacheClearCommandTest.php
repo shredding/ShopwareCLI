@@ -32,7 +32,6 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
         'templates'  => 'foo/cache/templates',
         'database'  => 'foo/cache/database',
         'proxies'  => 'foo/cache/proxies',
-        'doctrine_attributes' => 'foo/cache/doctrine/attributes',
         'doctrine_filecache' => 'foo/cache/doctrine/filecache',
         'doctrine_proxies' => 'foo/cache/doctrine/proxies'
     );
@@ -144,7 +143,6 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
     public function doctrineFlagDeletesDoctrineCache() {
 
         $expected = [
-            $this->caches['doctrine_attributes'],
             $this->caches['doctrine_filecache'],
             $this->caches['doctrine_proxies'],
         ];
@@ -219,7 +217,6 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
         $this->caches['proxies'] = 'foo/engine/Shopware/Proxies';
         unset($this->caches['doctrine_filecache']);
         unset($this->caches['doctrine_proxies']);
-        unset($this->caches['doctrine_attributes']);
 
         $fs = $this->getMock('Symfony\Component\Filesystem\Filesystem');
         $fs->expects($this->once())

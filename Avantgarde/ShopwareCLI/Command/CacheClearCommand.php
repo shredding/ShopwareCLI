@@ -68,7 +68,6 @@ EOF
              'templates' => $this->shop->getPath() . '/cache/templates',
              'database' => $this->shop->getPath() . '/cache/database',
              'proxies' => $this->shop->getPath() . '/cache/proxies',
-             'doctrine_attributes'  => $this->shop->getPath() . '/cache/doctrine/attributes',
              'doctrine_filecache'  => $this->shop->getPath() . '/cache/doctrine/filecache',
              'doctrine_proxies'  => $this->shop->getPath() . '/cache/doctrine/proxies',
         );
@@ -77,7 +76,6 @@ EOF
         $minorVersion = (int)explode('.', $this->shop->getVersion())[1];
         if ($minorVersion === 0) {
             $caches['proxies'] = $this->shop->getPath() . '/engine/Shopware/Proxies';
-            unset($caches['doctrine_attributes']);
             unset($caches['doctrine_filecache']);
             unset($caches['doctrine_proxies']);
         }
@@ -100,8 +98,8 @@ EOF
         }
 
         if ($input->getOption('doctrine')) {
-            $fs->remove(array($caches['doctrine_attributes'], $caches['doctrine_filecache'], $caches['doctrine_proxies']));
-            $fs->mkdir(array($caches['doctrine_attributes'], $caches['doctrine_filecache'], $caches['doctrine_proxies']));
+            $fs->remove(array($caches['doctrine_filecache'], $caches['doctrine_proxies']));
+            $fs->mkdir(array($caches['doctrine_filecache'], $caches['doctrine_proxies']));
             $output->writeln('<info>Doctrine Cache has been cleared.</info>');
             $atLeastOneFlagSet = TRUE;
         }
