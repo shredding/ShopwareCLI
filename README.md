@@ -14,11 +14,10 @@ ShopwareCLI supports shopware 4.1 and 4.0 with zero-configuration fallbacks.
 
 Installation
 ------------
+> ShopwareCLI requires at least PHP 5.4.
 
 ShopwareCLI is installed via [composer](http://getcomposer.org/). Since we do not have reached stable yet, you have to
 select *dev-stable*.
-
-> ShopwareCLI requires at least PHP 5.4.
 
 ```Shell
     composer create-project avantgarde/shopware-cli shopwareCLI dev-master
