@@ -83,7 +83,7 @@ You can now play along with the available commands or write your own.
 
 You get help by typing `./sw help [commandname]`.
 
-Many commands have flags, like: `./sw cache:clear -templates` (clears only the template cache) or have arguments (like
+Many commands have flags, like: `./sw cache:clear --templates` (clears only the template cache) or have arguments (like
 the select command, you have already used).
 
 You can use shortcuts as well:
