@@ -57,16 +57,16 @@ $config['hook'] = array(
     'proxyNamespace' =>  'Shopware_Proxies'
 );
 
-$masterVersion = $shop->getVersion();
-if ($masterVersion !== '___VERSION___') { // ___VERSION___ indicates development edition of shopware
-    $masterVersion = explode('.', $masterVersion)[0];
+$shopVersion = $shop->getVersion();
+if ($shopVersion !== '___VERSION___') { // ___VERSION___ indicates development edition of shopware
+    $masterVersion = explode('.', $shopVersion)[0];
 
     if ((int)$masterVersion < 4) {
         throw new Exception(sprintf('Unsuppported shopware version: %s.', $shop->getVersion()));
     }
 
     // TODO: Drop this when we stop supporting 4.0 (as of 4.2)
-    $minorVersion = explode('.', $masterVersion)[1];
+    $minorVersion = explode('.', $shopVersion)[1];
     if ((int)$minorVersion === 0) {
         $config['model']['proxyDir'] =  $shop->getPath() . '/engine/Shopware/Proxies';
     }
