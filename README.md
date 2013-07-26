@@ -124,36 +124,36 @@ Here are some examples:
 
 ```php
 
-    class YourCommand extends ShopwareCommand {
+class YourCommand extends ShopwareCommand {
 
-        protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
 
-            // Shopinformation
-            $this->shop->getName();                 # Name of the shop as configured in config.yml
-            $this->shop->getPath();                 # Root path of the configured shop
-            $this->shop->getWeb();                  # Web address of the Shop
-            $this->shop->getShopwareInstance();     # Accessor to the Shopware() global function
-            $this->shop->getEnlightInstance();      # Accessor to the Enlight() global function
+        // Shopinformation
+        $this->shop->getName();                 # Name of the shop as configured in config.yml
+        $this->shop->getPath();                 # Root path of the configured shop
+        $this->shop->getWeb();                  # Web address of the Shop
+        $this->shop->getShopwareInstance();     # Accessor to the Shopware() global function
+        $this->shop->getEnlightInstance();      # Accessor to the Enlight() global function
 
-            // There are as well some shortcuts
-            $this->shop->getRepository($fullyQualifiedModelClassName);
-            $this->shop->getDb();
+        // There are as well some shortcuts
+        $this->shop->getRepository($fullyQualifiedModelClassName);
+        $this->shop->getDb();
 
-            // Services can be accessed like this:
-            $this->getService($serviceName);
+        // Services can be accessed like this:
+        $this->getService($serviceName);
 
-            // The configuration is available like this:
-            $this->configuration->get('shops');         # Returns all configured shops as array;
-            $this->configuration->getBaseDirectory();   # Returns the base directory of shopware CLI
-            $this->configuration->getShopByName($name); # Returns a shop by the configured name
+        // The configuration is available like this:
+        $this->configuration->get('shops');         # Returns all configured shops as array;
+        $this->configuration->getBaseDirectory();   # Returns the base directory of shopware CLI
+        $this->configuration->getShopByName($name); # Returns a shop by the configured name
 
-            // You can define your own configuration structure in config.yml and access it as
-            // array like this:
-            $this->configuration->get('your_configuration');
-
-        }
+        // You can define your own configuration structure in config.yml and access it as
+        // array like this:
+        $this->configuration->get('your_configuration');
 
     }
+
+}
 
 ```
 
