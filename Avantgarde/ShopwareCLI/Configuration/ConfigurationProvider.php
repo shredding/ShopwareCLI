@@ -22,7 +22,7 @@ class ConfigurationProvider {
 
     const CONFIG_FILE = '/config/config.yml';
     const SERVICE_FILE = 'config/services.yml';
-    const CONFIG_CACHE_FILE = '/config_cache.php';
+    const CONFIG_CACHE_FILE = '/tmp/config_cache.php';
     const TEMP_DIRECTORY = 'tmp';
 
     /**
@@ -100,7 +100,11 @@ class ConfigurationProvider {
         if (isset($this->configArray['shops'])) {
 
             $shop = array_keys($this->configArray['shops']);
-            $name = $shop[0];
+            if (isset($shop[0])) {
+                $name = $shop[0];
+            } else {
+                $name = NULL;
+            }
             return $name !== FALSE ? $name : NULL;
         }
         return NULL;

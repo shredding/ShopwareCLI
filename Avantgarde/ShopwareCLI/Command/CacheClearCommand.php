@@ -61,8 +61,14 @@ EOF
         $caches = array(
              'templates' => $this->shop->getPath() . '/cache/templates',
              'database' => $this->shop->getPath() . '/cache/database',
-             'proxies'  => $this->shop->getPath() . '/engine/Shopware/Proxies'
+             'proxies'  => $this->shop->getPath() . '/cache/proxies'
         );
+
+        // TODO: Drop this when we stop supporting 4.0 (as of 4.2)
+        $minorVersion = (int)explode('.', $this->shop->getVersion())[1];
+        if ($minorVersion === 0) {
+            $caches['proxies'] = $this->shop->getPath() . '/engine/Shopware/Proxies';
+        }
 
         $atLeastOneFlagSet = FALSE;
 

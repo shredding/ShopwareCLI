@@ -31,13 +31,14 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
     protected $caches = array(
         'templates'  => 'foo/cache/templates',
         'database'  => 'foo/cache/database',
-        'proxies'  => 'foo/engine/Shopware/Proxies'
+        'proxies'  => 'foo/cache/proxies'
     );
 
     public function setUp() {
 
         $mockedShop = new Shop();
         $mockedShop->setPath('foo');
+        $mockedShop->setVersion('4.1.0');
         $this->command = new CacheClearCommand();
         $this->command->setShop($mockedShop);
 
@@ -138,6 +139,45 @@ class CacheClearCommandTest extends PHPUnit_Framework_TestCase
      * @test
      */
     public function proxiesFlagDeletesProxyCache() {
+        $fs = $this->getMock('Symfony\Component\Filesystem\Filesystem');
+        $fs->expects($this->once())
+            ->method('remove')
+            ->with(array($this->caches['proxies']));
+        $fs->expects($this->once())
+            ->method('mkdir')
+            ->with(array($this->caches['proxies']));
+
+        $container = $this->getMock('Symfony\Component\DependencyInjection\Container', array('get'));
+        $container->expects($this->once())
+            ->method('get')
+            ->will(
+                $this->returnValue($fs)
+            );
+
+        $this->command->setServiceContainer($container);
+
+        /** @var Application $application */
+        $application = new Application();
+        $application->add($this->command);
+
+        $command = $application->find('cache:clear');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array('command' => $command->getName(), '--proxies' => TRUE));
+    }
+
+    /**
+     * @test
+     */
+    public function fallsBackToOldCacheConfigForFourZeroVersions() {
+
+        $mockedShop = new Shop();
+        $mockedShop->setPath('foo');
+        $mockedShop->setVersion('4.0.0');
+        $this->command = new CacheClearCommand();
+        $this->command->setShop($mockedShop);
+
+        $this->caches['proxies'] = 'foo/engine/Shopware/Proxies';
+
         $fs = $this->getMock('Symfony\Component\Filesystem\Filesystem');
         $fs->expects($this->once())
             ->method('remove')

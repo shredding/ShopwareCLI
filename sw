@@ -10,6 +10,8 @@
  */
 
 ini_set('display_errors', 1);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 require_once 'vendor/autoload.php';
 
 use Avantgarde\ShopwareCLI\Application;
@@ -20,6 +22,8 @@ $shop = $application->getShop();
 
 include_once 'Enlight/Application.php';
 include_once 'Shopware/Application.php';
+
+$shop->setVersion(Shopware::VERSION);
 
 $config = require_once 'config.php';
 $config['cache'] = array(
@@ -35,13 +39,34 @@ $config['cache'] = array(
         'hashed_directory_level'    => 3,
         'cache_dir'                 => __DIR__ . '/tmp',
         'file_name_prefix'          => 'shopware_cli'
+    ),
+    'httpCache'         => array(
+        'enabled'                   => FALSE,
+        'cache_dir'                 => __DIR__ . '/tmp'
     )
 );
 $config['model'] = array(
-    'proxyDir'          =>  $shop->getPath() . '/engine/Shopware/Proxies',
-    'proxyNamespace'    =>  'Shopware\Proxies',
     'attributeDir'      =>  __DIR__ . '/tmp',
+    'proxyNamespace'    =>  'Shopware\Proxies',
+    'fileCacheDir'     =>   __DIR__ . '/tmp',
+    'proxyDir'          =>  $shop->getPath() . '/cache/proxies'
 );
+
+$config['hook'] = array(
+    'proxyDir' => $shop->getPath() . '/cache/proxies',
+    'proxyNamespace' =>  'Shopware_Proxies'
+);
+
+$masterVersion = explode('.', $shop->getVersion())[0];
+if ((int)$masterVersion < 4) {
+    throw new Exception(sprintf('Unsuppported shopware version: %s.', $shop->getVersion()));
+}
+
+// TODO: Drop this when we stop supporting 4.0 (as of 4.2)
+$minorVersion = explode('.', $shop->getVersion())[1];
+if ((int)$minorVersion === 0) {
+    $config['model']['proxyDir'] =  $shop->getPath() . '/engine/Shopware/Proxies';
+}
 
 $shopware = new Shopware('development', $config);
 

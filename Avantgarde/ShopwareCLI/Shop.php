@@ -3,6 +3,7 @@
 
 namespace Avantgarde\ShopwareCLI;
 use Enlight_Components_Db_Adapter_Pdo_Mysql;
+use Shopware;
 
 
 /**
@@ -28,6 +29,18 @@ class Shop {
      * @var string
      */
     protected $web;
+
+    /**
+     * @var string
+     */
+    protected $version;
+
+    /**
+     * @return string
+     */
+    public function getVersion() {
+        return $this->version;;
+    }
 
     /**
      * @return \Shopware
@@ -56,8 +69,14 @@ class Shop {
      */
     public function getDb() {
         return $this->getShopwareInstance()->Db();
+    }
 
-
+    /**
+     * @param string $version
+     * @retrun Shop
+     */
+    public function setVersion($version) {
+        $this->version = $version;
     }
 
     /**

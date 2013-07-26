@@ -3,7 +3,6 @@
 namespace Avantgarde\ShopwareCLI\Tests\Configuration;
 use Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider;
 use InvalidArgumentException;
-use Symfony\Component\Validator\Constraints\True;
 
 
 /**
