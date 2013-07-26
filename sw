@@ -58,7 +58,7 @@ $config['hook'] = array(
 );
 
 $masterVersion = $shop->getVersion();
-if ($masterVersion != '___VERSION___') { // ___VERSION___ indicates development edition of shopware
+if ($masterVersion !== '___VERSION___') { // ___VERSION___ indicates development edition of shopware
     $masterVersion = explode('.', $masterVersion)[0];
 
     if ((int)$masterVersion < 4) {
