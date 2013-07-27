@@ -20,21 +20,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @link       http://digitale-avantgarde.com
  * @since      File available since Release 1.0.0
  */
-class PluginReinstallCommand extends ShopwareCommand {
+class PluginDeactivateCommand extends ShopwareCommand {
 
 
     protected function configure()
     {
         $this
-            ->setName('plugin:reinstall')
-            ->setDescription('Reinstalls a plugin.')
+            ->setName('plugin:deactivate')
+            ->setDescription('Deactivates a plugin.')
             ->addArgument(
                 'plugin',
                 InputArgument::REQUIRED,
-                'The plugin to be reinstalled.'
+                'The plugin to be deactivated.'
             )
             ->setHelp(<<<EOF
-The <info>%command.name%</info> reinstalls a plugins (deinstall & reinstall). Optionally you can reapply the configuration.
+The <info>%command.name%</info> deactivates a plugin.
 EOF
             );
         ;
@@ -55,11 +55,16 @@ EOF
             return 1;
         }
 
+        if ($plugin->getActive() === FALSE) {
+            $output->writeln(sprintf('The plugin %s is already deactivated.', $pluginName));
+            $output->writeln('');
+            return 1;
+        }
+
         $controller= new PluginController(
             [
                 'id'        =>  $plugin->getId(),
                 'installed' =>  $plugin->getInstalled(),
-                'active'    =>  TRUE,
                 'version'   =>  $plugin->getVersion()
             ]
         );
@@ -70,7 +75,7 @@ EOF
             $success = $assignments['success'];
 
             if ($success === TRUE) {
-                $output->writeln(sprintf('Okay, %s has been reinstalled', $pluginName));
+                $output->writeln(sprintf('Okay, %s has been deactivated', $pluginName));
             } else {
                 if (isset($assignments['message'])) {
                     throw new Exception($assignments['message']);

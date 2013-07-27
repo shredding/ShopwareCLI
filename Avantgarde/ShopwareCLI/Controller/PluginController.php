@@ -1,8 +1,8 @@
 <?php
 
 
-namespace Avantgarde\ShopwareCLI\Overwrite;
-use Avantgarde\ShopwareCLI\Overwrite\ControllerPatchTrait;
+namespace Avantgarde\ShopwareCLI\Controller;
+use Avantgarde\ShopwareCLI\Controller\CLIControllerTrait;
 
 
 /**
@@ -12,9 +12,9 @@ use Avantgarde\ShopwareCLI\Overwrite\ControllerPatchTrait;
  * @link       http://digitale-avantgarde.com
  * @since      File available since Release 1.0.0
  */
-class PluginControllerOverwrite extends \Shopware_Controllers_Backend_Plugin {
+class PluginController extends \Shopware_Controllers_Backend_Plugin {
 
-    use ControllerPatchTrait;
+    use CLIControllerTrait;
 
     public function __construct(array $pluginInformation) {
         $this->initialize($pluginInformation);

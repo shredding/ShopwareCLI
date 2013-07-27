@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Avantgarde\ShopwareCLI\Overwrite\Helper;
+namespace Avantgarde\ShopwareCLI\Controller\HTTPWrapper;
 
 
 /**
@@ -12,6 +12,16 @@ namespace Avantgarde\ShopwareCLI\Overwrite\Helper;
  * @since      File available since Release 1.0.0
  */
 class View {
+
+    /**
+     * Dummy for all not required methods.
+     *
+     * @param $name
+     * @param $arguments
+     */
+    public function __call($name, $arguments) {
+
+    }
 
     /**
      * @var array
@@ -28,7 +38,7 @@ class View {
     /**
      * @return array
      */
-    public static function getAssignments() {
+    public static function getAssign() {
         return self::$data;
     }
 

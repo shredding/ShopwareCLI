@@ -20,21 +20,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @link       http://digitale-avantgarde.com
  * @since      File available since Release 1.0.0
  */
-class PluginReinstallCommand extends ShopwareCommand {
+class PluginActivateCommand extends ShopwareCommand {
 
 
     protected function configure()
     {
         $this
-            ->setName('plugin:reinstall')
-            ->setDescription('Reinstalls a plugin.')
+            ->setName('plugin:activate')
+            ->setDescription('Activates a plugin.')
             ->addArgument(
                 'plugin',
                 InputArgument::REQUIRED,
-                'The plugin to be reinstalled.'
+                'The plugin to be activated.'
             )
             ->setHelp(<<<EOF
-The <info>%command.name%</info> reinstalls a plugins (deinstall & reinstall). Optionally you can reapply the configuration.
+The <info>%command.name%</info> activates a plugin.
 EOF
             );
         ;
@@ -55,6 +55,12 @@ EOF
             return 1;
         }
 
+        if ($plugin->getActive()) {
+            $output->writeln(sprintf('The plugin %s is already activated.', $pluginName));
+            $output->writeln('');
+            return 1;
+        }
+
         $controller= new PluginController(
             [
                 'id'        =>  $plugin->getId(),
@@ -70,7 +76,7 @@ EOF
             $success = $assignments['success'];
 
             if ($success === TRUE) {
-                $output->writeln(sprintf('Okay, %s has been reinstalled', $pluginName));
+                $output->writeln(sprintf('Okay, %s has been activated.', $pluginName));
             } else {
                 if (isset($assignments['message'])) {
                     throw new Exception($assignments['message']);
