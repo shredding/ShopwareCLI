@@ -53,7 +53,7 @@ EOF
             $output->writeln(sprintf('Unknown plugin: %s.', $pluginName));
             $output->writeln('');
             return 1;
-        }
+        };
 
         $controller= new PluginController(
             [
