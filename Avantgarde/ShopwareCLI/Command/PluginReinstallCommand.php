@@ -52,14 +52,10 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln('');
-        $pluginName = $input->getArgument('plugin');
-
 
         $data = $this->getPluginData($input->getArgument('plugin'));
 
-
         $controller = new PluginController($data);
-
         $controller->savePluginAction();
 
         $data = $this->getPluginData($input->getArgument('plugin'));
