@@ -21,9 +21,11 @@ trait CLIControllerTrait {
      * This is the array that the original controller expects upon Request()->getPost()
      *
      * @param array $requestParams
+     * @return $this
      */
     public function initialize(array $requestParams) {
         Request::setParams($requestParams);
+        return $this;
     }
 
     /**

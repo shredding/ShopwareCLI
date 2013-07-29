@@ -5,6 +5,10 @@ namespace Avantgarde\ShopwareCLI\Command;
 
 use Avantgarde\ShopwareCLI\Configuration\ConfigurationProvider;
 use Avantgarde\ShopwareCLI\Controller\PluginController;
+use Avantgarde\ShopwareCLI\Controller\PluginManagerController;
+use DateTime;
+use InvalidArgumentException;
+use Shopware_Components_Plugin_Namespace;
 use Shopware_Controllers_Backend_Plugin;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
@@ -33,6 +37,12 @@ class PluginReinstallCommand extends ShopwareCommand {
                 InputArgument::REQUIRED,
                 'The plugin to be reinstalled.'
             )
+            ->addOption(
+                'reapply-configuration',
+                'r',
+                InputOption::VALUE_NONE,
+                'Preserves the original plugin configuration.'
+            )
             ->setHelp(<<<EOF
 The <info>%command.name%</info> reinstalls a plugins (deinstall & reinstall). Optionally you can reapply the configuration.
 EOF
@@ -44,45 +54,61 @@ EOF
         $output->writeln('');
         $pluginName = $input->getArgument('plugin');
 
+
+        $data = $this->getPluginData($input->getArgument('plugin'));
+
+
+        $controller = new PluginController($data);
+
+        $controller->savePluginAction();
+
+        $data = $this->getPluginData($input->getArgument('plugin'));
+        $controller->initialize($data)
+                   ->savePluginAction();
+
+        $output->writeln('');
+
+        return 0;
+    }
+
+    private function getPluginData($pluginName) {
+
         $repository = $this->shop->getRepository('\Shopware\Models\Plugin\Plugin');
+        $this->shop->getShopwareInstance()->Models()->flush();
 
         /** @var \Shopware\Models\Plugin\Plugin $plugin */
         $plugin = $repository->findOneBy(['name' => $pluginName]);
 
         if ($plugin === NULL) {
-            $output->writeln(sprintf('Unknown plugin: %s.', $pluginName));
-            $output->writeln('');
-            return 1;
+            throw new InvalidArgumentException('Unknown plugin %s.', $pluginName);
         };
 
-        $controller= new PluginController(
-            [
-                'id'        =>  $plugin->getId(),
-                'installed' =>  $plugin->getInstalled(),
-                'active'    =>  TRUE,
-                'version'   =>  $plugin->getVersion()
-            ]
-        );
-        $controller->savePluginAction();
-        $assignments = $controller->getAssignments();
 
-        if (isset($assignments['success'])) {
-            $success = $assignments['success'];
-
-            if ($success === TRUE) {
-                $output->writeln(sprintf('Okay, %s has been reinstalled', $pluginName));
-            } else {
-                if (isset($assignments['message'])) {
-                    throw new Exception($assignments['message']);
-                } else {
-                    $output->writeln(sprintf('Unable to update %s.', $pluginName));
-                }
-            }
-
-        } else {
-            $output->writeln('An unknown error occured, sorry.');
-        }
-        $output->writeln('');
+        return [
+        "active" => $plugin->getActive(),
+        "added" => $plugin->getAdded(),
+        "author" => $plugin->getAuthor(),
+        "capabilityDummy"=> $plugin->isDummy(),
+        "capabilityEnable" => TRUE,
+        "capabilityInstall" => TRUE,
+        "capabilityUpdate" => TRUE,
+        "changes" => $plugin->getChanges(),
+        "configForms" => $plugin->getConfigForms()->toArray(),
+        "copyright" => $plugin->getCopyright(),
+        "description" => $plugin->getDescription(),
+        "id" => $plugin->getId(),
+        "label" => $plugin->getLabel(),
+        "license" => $plugin->getLicense(),
+        "licenses" => $plugin->getLicenses(),
+        "link" => $plugin->getLink(),
+        "name" => $plugin->getName(),
+        "namespace" => $plugin->getNamespace(),
+        "product" => [],
+        "source" => $plugin->getSource(),
+        "support" => $plugin->getSupport(),
+        "updateVersion" => $plugin->getUpdateVersion(),
+        "updated" => $plugin->getUpdated(),
+        "version"=> $plugin->getVersion()
+        ];
     }
-
 } 
