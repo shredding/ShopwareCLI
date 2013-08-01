@@ -10,7 +10,7 @@ with a growing set of administrative task managers and code generators.
 > Disclaimer: ShopwareCLI is a fall-out from my daily work with shopware. I'm not releasing it because it's yet stable
 > and it's not associated with the shopware AG. I'm releasing it, because I'm not comfortable with closed source.
 
-ShopwareCLI supports shopware 4.1 and 4.0 with zero-configuration fallbacks.
+ShopwareCLI supports shopware 4.1 and 4.0 with zero-configuration fallback.
 
 Installation
 ------------
