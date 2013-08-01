@@ -72,7 +72,7 @@ class Request {
             case isset(self::$_params[$key]):
                 return TRUE;
             default:
-                return NULL;
+                return FALSE;
         }
     }
 

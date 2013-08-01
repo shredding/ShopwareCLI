@@ -165,8 +165,100 @@ ShopwareCLI uses some other symfony components like *filesystem* or *dependency-
 these tools, you might want to have a look into the fantastic component documentation, as they are really helping you
 to write testable and maintainable command line applications for shopware.
 
+
+Execute controller actions
+--------------------------
+
+ShopwareCLI supports you by writing commands and gives you access to the entire shopware infrastructure.
+
+However, most use cases that are already implemented in shopware, it's plugins or your own plugin, are operated by controllers.
+The MVC pattern of  shopware (as in most if not all PHP MVC Frameworks) is tied to the HTTP Request / Response cycle, that
+is not available from the command line.
+
+This would force you to reimplement the controller logic again in your commands. That's not DRY, that's not KISS, that's not FUN!
+
+But ShopwareCLI is supposed to be fun! Therefore it ships with an easy-to-use *controller component* that makes it remarkably easy
+to execute shopwares controller actions.
+
+In order to make a controller CLI ready, you have to *extend* the original controller within the CLI context like this:
+
+```php
+class PluginController extends \Shopware_Controllers_Backend_Plugin {
+
+    use CLIControllerTrait;
+
+    public function __construct(array $pluginInformation) {
+        $this->initialize($pluginInformation);
+    }
+
+}
+```
+
+As you can see, we get away with *very* little code.
+
+A CLI-ready controller must meet two demands:
+
+* it must use `Avantgarde\ShopwareCLI\Controller\CLIControllerTrait`
+* it must override the constructor
+
+Behind the scenes, the Trait is patching the original *Englight_Action* and exchanges it's core actors - namely *Request* and *View* -
+with it's own implementations, that can be found within `Avantgarde\ShopwareCLI\Controller\HTTPWrapper`.
+
+It's not necessary to accept an array in the constructor, but it's good practise to initialize the CLI Controller right away.
+
+`$pluginInformation` become the Request data, and will be passed to the controller wrapped in a Request-like class.
+
+Let's have a look on an actual implementation, `plugin:deactivate` is a command that makes use of the implementation above:
+
+```php
+    $pluginName = $input->getArgument('plugin');
+
+    $repository = $this->shop->getRepository('\Shopware\Models\Plugin\Plugin');
+
+    /** @var \Shopware\Models\Plugin\Plugin $plugin */
+    $plugin = $repository->findOneBy(['name' => $pluginName]);
+    $controller= new PluginController(
+        [
+            'id'        =>  $plugin->getId(),
+            'installed' =>  $plugin->getInstalled(),
+            'version'   =>  $plugin->getVersion()
+        ]
+    );
+    $controller->savePluginAction();
+```
+
+The to-be-called action is named `savePluginAction` and it needs a few information about the plugin given as array. We pass
+them to the constructor and can call the controller action. It's that easy.
+
+The last step to do is printing some output. Controller are *assigning* the output information to the *View* class, and
+- normal circumstances assumed - a smarty template or ExtJS will take care of the rendering. We can easily report the action's
+outcome by retrieving these assignments:
+
+
+```php
+    if ($controller->getAssign()['success']) {
+        // Looks like it worked!
+    } else {
+        // Something went wrong.
+    };
+```
+
+
 Licence
 -------
 
-ShopwareCLI is published under the [GNU Licence for Free Software](http://www.gnu.org/licenses/gpl.html).
+Copyright (c) 2013, Die Digitale Avantgarde UG (haftungsbeschränkt)
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 

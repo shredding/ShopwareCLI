@@ -12,5 +12,7 @@ commands:
         Avantgarde\ShopwareCLI\Command\CacheClearCommand
     plugin_list:
         Avantgarde\ShopwareCLI\Command\PluginListCommand
-    plugin_reinstall:
-        Avantgarde\ShopwareCLI\Command\PluginReinstallCommand
+    plugin_activate:
+        Avantgarde\ShopwareCLI\Command\PluginActivateCommand
+    plugin_deactivate:
+        Avantgarde\ShopwareCLI\Command\PluginDeactivateCommand
