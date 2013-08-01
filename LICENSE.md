@@ -1,4 +1,4 @@
-Copyright (c) 2013, Die Digitale Avantgarde UG (haftungsbeschränkt)
+Copyright (c) 2013, Christian Peters, Die Digitale Avantgarde UG (haftungsbeschränkt)
 
 All rights reserved.
 
