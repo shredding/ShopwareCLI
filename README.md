@@ -230,7 +230,7 @@ Let's have a look on an actual implementation, `plugin:deactivate` is a command 
 The to-be-called action is named `savePluginAction` and it needs a few information about the plugin given as array. We pass
 them to the constructor and can call the controller action. It's that easy.
 
-The last step to do is printing some output. Controller are *assigning* the output information to the *View* class, and - normal circumstances assumed -
+The last step to do is printing some output. Controller are *assiLgning* the output information to the *View* class, and - normal circumstances assumed -
 a smarty template or ExtJS will take care of the rendering. We can easily report the action's outcome by retrieving these assignments:
 
 
@@ -251,6 +251,7 @@ Licence
 -------
 
 Copyright (c) 2013, Die Digitale Avantgarde UG (haftungsbeschränkt)
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
