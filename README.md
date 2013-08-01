@@ -96,7 +96,7 @@ You can use shortcuts as well:
 There are many more features available such as autocompletion and interactive shell for configuration and I'm planning
 to use these for upcoming features such as an extension kickstarter or interactive model generation.
 
-Since we're based on the symfony console, it may be a good start to read it's [documentation](symfony.com/doc/2.0/components/console/introduction.html).
+Since we're based on the symfony console, it may be a good start to read it's [documentation](http://symfony.com/doc/current/components/console/introduction.html).
 It may as well come in handy, when it comes to write your own commands!
 
 Writing your own commands
