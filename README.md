@@ -4,7 +4,7 @@ ShopwareCLI
 ShopwareCLI is not only a growing library of shopware CLI Tools, but a full blown infrastructure framework for adding
 feature rich command line applications to your shopware system.
 
-It is build upon the powerful symfony console component, supports management of mulitple shopware instances and ships
+It is build upon the powerful symfony console component, supports management of multiple shopware instances and ships
 with a growing set of administrative task managers and code generators.
 
 > Disclaimer: ShopwareCLI is a fall-out from my daily work with shopware. I'm not releasing it because it's yet stable
@@ -49,7 +49,7 @@ ShopwareCLI can be configured with multiple shop instances - as this is what you
 If you mount a remote shop into your local drive you can even control remote shops via command line.
 
 Commands are the available commands inside the system. ShopwareCLI is built for writing command line apps for shopware
-with ease, so you can add your own commands and are ready to use the entire infrastructe.
+with ease, so you can add your own commands and are ready to use the entire infrastructure.
 
 > It's recommended to create a dedicated composer package for your commands and add them as dependency to composer.json,
 > as you won't need to configure the autoloader.
@@ -109,7 +109,7 @@ Inside of the commands execute file, you have access to shopwares global functio
 is as well an established database connection, plugins are manipulable, doctrine is there and so on. Autoloading is
 available as well. You can use large portions of the core code in your own commands.
 
-However, there are a few thing that are uniqure to ShopwareCLI, like you have to register your command to config.yml.
+However, there are a few thing that are unique to ShopwareCLI, like you have to register your command to config.yml.
 
 You might as well need information about the shop, such as it's web url or path and you will want to write unit tests for
 your commands.
@@ -201,7 +201,7 @@ A CLI-ready controller must meet two demands:
 * it must use `Avantgarde\ShopwareCLI\Controller\CLIControllerTrait`
 * it must override the constructor
 
-Behind the scenes, the trait is patching the original *Englight_Action* and exchanges it's core actors - namely *Request* and *View* -
+Behind the scenes, the trait is patching the original *Enlight_Action* and exchanges it's core actors - namely *Request* and *View* -
 with it's own implementations.
 
 It's not necessary to accept an array in the constructor, but it's good practise to initialize the CLI Controller right away.
@@ -230,7 +230,7 @@ Let's have a look on an actual implementation, `plugin:deactivate` is a command 
 The to-be-called action is named `savePluginAction` and it needs a few information about the plugin given as array. We pass
 them to the constructor and can call the controller action. It's that easy.
 
-The last step to do is printing some output. Controller are *assiLgning* the output information to the *View* class, and - normal circumstances assumed -
+The last step to do is printing some output. Controller are *assigning* the output information to the *View* class, and - normal circumstances assumed -
 a smarty template or ExtJS will take care of the rendering. We can easily report the action's outcome by retrieving these assignments:
 
 
