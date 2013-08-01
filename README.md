@@ -242,6 +242,10 @@ a smarty template or ExtJS will take care of the rendering. We can easily report
     };
 ```
 
+> The controller component is a fallout from a real-life project and may not yet be masquerading all necessary methods. But it's build with
+> extendability in mind, so please report missing features to help stabilize it.
+
+
 
 Licence
 -------
