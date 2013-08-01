@@ -201,14 +201,14 @@ A CLI-ready controller must meet two demands:
 * it must use `Avantgarde\ShopwareCLI\Controller\CLIControllerTrait`
 * it must override the constructor
 
-Behind the scenes, the Trait is patching the original *Englight_Action* and exchanges it's core actors - namely *Request* and *View* -
-with it's own implementations, that can be found within `Avantgarde\ShopwareCLI\Controller\HTTPWrapper`.
+Behind the scenes, the trait is patching the original *Englight_Action* and exchanges it's core actors - namely *Request* and *View* -
+with it's own implementations.
 
 It's not necessary to accept an array in the constructor, but it's good practise to initialize the CLI Controller right away.
 
-`$pluginInformation` become the Request data, and will be passed to the controller wrapped in a Request-like class.
+`$pluginInformation` becomes the request data, and will be passed to the controller wrapped in a class, masquerading as request.
 
-Let's have a look on an actual implementation, `plugin:deactivate` is a command that makes use of the implementation above:
+Let's have a look on an actual implementation, `plugin:deactivate` is a command that makes use of the *PluginController*:
 
 ```php
     $pluginName = $input->getArgument('plugin');
@@ -230,9 +230,8 @@ Let's have a look on an actual implementation, `plugin:deactivate` is a command 
 The to-be-called action is named `savePluginAction` and it needs a few information about the plugin given as array. We pass
 them to the constructor and can call the controller action. It's that easy.
 
-The last step to do is printing some output. Controller are *assigning* the output information to the *View* class, and
-- normal circumstances assumed - a smarty template or ExtJS will take care of the rendering. We can easily report the action's
-outcome by retrieving these assignments:
+The last step to do is printing some output. Controller are *assigning* the output information to the *View* class, and - normal circumstances assumed -
+a smarty template or ExtJS will take care of the rendering. We can easily report the action's outcome by retrieving these assignments:
 
 
 ```php
