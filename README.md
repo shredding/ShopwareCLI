@@ -1,7 +1,7 @@
 ShopwareCLI
 ===========
 
-> SHOPWARE 4.2 hat nun ein CLI Framework eingebaut, daher wird dieses Repository nicht mehr weiterentwickelt!
+> SHOPWARE 4.2 features it's own CLI Framework therefore I recommend using it instead of this library!
 
 ShopwareCLI is not only a growing library of shopware CLI Tools, but a full blown infrastructure framework for adding
 feature rich command line applications to your shopware system.
